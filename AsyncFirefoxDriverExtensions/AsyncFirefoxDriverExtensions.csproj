@@ -55,6 +55,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddonManager\AddonData.cs" />
+    <Compile Include="AddonManager\AddonManager.cs" />
+    <Compile Include="AddonManager\AddonManagerExtension.cs" />
+    <Compile Include="AddonManager\InstallAddonResult.cs" />
     <Compile Include="LiveIp\LiveIpExtension.cs" />
     <Compile Include="LiveIp\LiveIpResult.cs" />
     <Compile Include="LivePreferences\LivePreferences.cs" />

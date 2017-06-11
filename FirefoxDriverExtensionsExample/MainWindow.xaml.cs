@@ -103,5 +103,46 @@ namespace FirefoxDriverExtensionsExample
             var res = await ffDriver.GetLiveIp();
             tbIpRes.Text = res.Ip ?? res.Error;
         }
+
+        private async void Button_Click_9(object sender, RoutedEventArgs e)
+        {
+            if (ffDriver == null) return;
+            var res = await ffDriver.AddonManager().GetAddonsList();
+            lbAddons.ItemsSource = res;
+        }
+
+        private void lbAddons_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var ad = lbAddons.SelectedItem as AddonData;
+            if(ad != null) tbAddonData.Text = ad.GetInfo();
+        }
+
+        private async void Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            if (ffDriver == null) return;
+            var res = await ffDriver.AddonManager().InstallAddon(tbAddonPath.Text);
+            tbAddonData.Text = res.AddonId ?? res.Error;
+        }
+
+        private async void Button_Click_11(object sender, RoutedEventArgs e)
+        {
+            if (ffDriver == null) return;
+            var ad = lbAddons.SelectedItem as AddonData;
+            if (!string.IsNullOrWhiteSpace(ad?.Id))
+            {
+                await ffDriver.AddonManager().UninstallAddon(ad.Id);
+                tbAddonData.Text = ad?.Id + " uninstalled.";
+                var res = await ffDriver.AddonManager().GetAddonsList();
+                lbAddons.ItemsSource = res;
+            }
+
+        }
+
+        private async void Button_Click_12(object sender, RoutedEventArgs e)
+        {
+            if (ffDriver == null) return;
+            var res = await ffDriver.AddonManager().InstallTemporaryAddon(tbAddonPath.Text);
+            tbAddonData.Text = res.AddonId ?? res.Error;
+        }
     }
 }

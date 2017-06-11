@@ -7,25 +7,50 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <TextBox x:Name="tbPrefPath" HorizontalAlignment="Left" Height="23" Margin="26,50,0,0" TextWrapping="Wrap" Text="intl.accept_languages" VerticalAlignment="Top" Width="127"/>
-        <Button Content="get" HorizontalAlignment="Left" Margin="165,53,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-        <TextBox x:Name="tbGetPrefRes" Height="23" Margin="254,51,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBox x:Name="tbProfileName" HorizontalAlignment="Left" Height="23" Margin="33,9,0,0" TextWrapping="Wrap" Text="default" VerticalAlignment="Top" Width="120"/>
-        <Button Content="open firefox" HorizontalAlignment="Left" Margin="165,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <TextBox x:Name="tbPrefNewValue" Height="23" Margin="254,101,10,0" TextWrapping="Wrap" Text="'en-us,en'" VerticalAlignment="Top"/>
-        <Button Content="set" HorizontalAlignment="Left" Margin="165,101,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
-        <TextBlock x:Name="tblOpened" HorizontalAlignment="Left" Margin="276,17,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-        <TextBlock x:Name="tblRes" HorizontalAlignment="Left" Margin="116,151,0,0" TextWrapping="Wrap" Text="result" VerticalAlignment="Top"/>
-        <Button Content="getLocalized" HorizontalAlignment="Left" Margin="165,78,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
-        <TextBox x:Name="tbGetLocalizedPrefRes" Height="23" Margin="254,76,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <Button Content="reset" HorizontalAlignment="Left" Margin="48,76,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5"/>
-        <Button Content="isSet" HorizontalAlignment="Left" Margin="48,101,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_6"/>
-        <Button Content="setLocalized" HorizontalAlignment="Left" Margin="165,126,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
-        <TextBox x:Name="tbPrefNewValue_Copy" Height="23" Margin="254,126,10,0" TextWrapping="Wrap" Text="'en-us,en'" VerticalAlignment="Top"/>
-        <Button Content="has" HorizontalAlignment="Left" Margin="48,126,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_7"/>
-        <TextBox x:Name="tbIpRes" HorizontalAlignment="Left" Height="23" Margin="165,186,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button Content="get live ip" HorizontalAlignment="Left" Margin="48,189,0,0" VerticalAlignment="Top" Width="105" Click="Button_Click_8"/>
-        <TextBlock HorizontalAlignment="Left" Margin="48,32,0,0" TextWrapping="Wrap" Text="LivePreferences" VerticalAlignment="Top" FontSize="14"/>
+        <TabControl>
+            <TabItem Header="Preferences and IP">
+                <Grid Background="#FFE5E5E5">
+                    <TextBox x:Name="tbPrefPath" HorizontalAlignment="Left" Height="23" Margin="26,50,0,0" TextWrapping="Wrap" Text="intl.accept_languages" VerticalAlignment="Top" Width="127"/>
+                    <Button Content="get" HorizontalAlignment="Left" Margin="165,53,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+                    <TextBox x:Name="tbGetPrefRes" Height="23" Margin="254,51,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBox x:Name="tbProfileName" HorizontalAlignment="Left" Height="23" Margin="33,9,0,0" TextWrapping="Wrap" Text="default" VerticalAlignment="Top" Width="120"/>
+                    <Button Content="open firefox" HorizontalAlignment="Left" Margin="165,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+                    <TextBox x:Name="tbPrefNewValue" Height="23" Margin="254,101,10,0" TextWrapping="Wrap" Text="'en-us,en'" VerticalAlignment="Top"/>
+                    <Button Content="set" HorizontalAlignment="Left" Margin="165,101,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+                    <TextBlock x:Name="tblOpened" HorizontalAlignment="Left" Margin="276,17,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="tblRes" HorizontalAlignment="Left" Margin="116,151,0,0" TextWrapping="Wrap" Text="result" VerticalAlignment="Top"/>
+                    <Button Content="getLocalized" HorizontalAlignment="Left" Margin="165,78,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
+                    <TextBox x:Name="tbGetLocalizedPrefRes" Height="23" Margin="254,76,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <Button Content="reset" HorizontalAlignment="Left" Margin="48,76,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5"/>
+                    <Button Content="isSet" HorizontalAlignment="Left" Margin="48,101,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_6"/>
+                    <Button Content="setLocalized" HorizontalAlignment="Left" Margin="165,126,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
+                    <TextBox x:Name="tbPrefNewValue_Copy" Height="23" Margin="254,126,10,0" TextWrapping="Wrap" Text="'en-us,en'" VerticalAlignment="Top"/>
+                    <Button Content="has" HorizontalAlignment="Left" Margin="48,126,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_7"/>
+                    <TextBox x:Name="tbIpRes" HorizontalAlignment="Left" Height="23" Margin="165,186,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                    <Button Content="get live ip" HorizontalAlignment="Left" Margin="48,189,0,0" VerticalAlignment="Top" Width="105" Click="Button_Click_8"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="48,32,0,0" TextWrapping="Wrap" Text="LivePreferences" VerticalAlignment="Top" FontSize="14"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="AddonManager">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="119"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="243*"/>
+                        <ColumnDefinition Width="268*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="tbAddonPath" Height="23" Margin="10,27,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2" Text="path to xpi or rdf"/>
+                    <Button Content="install" HorizontalAlignment="Left" Margin="27,60,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_10" Height="20"/>
+                    <Button Content="install temporary" HorizontalAlignment="Left" Margin="112,60,0,0" VerticalAlignment="Top" Width="126" Click="Button_Click_12" Height="20"/>
+                    <ListBox x:Name="lbAddons" Grid.Row="1" SelectionChanged="lbAddons_SelectionChanged"/>
+                    <Button Content="list" HorizontalAlignment="Left" Margin="27,92,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_9" Height="20"/>
+                    <Button Content="uninstall" HorizontalAlignment="Left" Margin="112,92,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_11" Height="20"/>
+                    <TextBox x:Name="tbAddonData" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </Window>
