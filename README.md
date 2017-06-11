@@ -2,10 +2,10 @@
 
 Extensions for [AsyncFirefoxDriver](https://github.com/ToCSharp/AsyncWebDriver).
 
-Now we have:
 * LiveIp to get ip
 * LivePreferences to view and edit Firefox preferences of running profile
 * AddonManager have methods GetAddonsList, InstallAddon, InstallTemporaryAddon, UninstallAddon.
+* You say, what to do first. On gitter or in issues.
 
 [![Join the chat at https://gitter.im/AsyncWebDriver/Lobby](https://badges.gitter.im/AsyncWebDriver/Lobby.svg)](https://gitter.im/AsyncWebDriver/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -24,10 +24,10 @@ PM> Install-Package AsyncFirefoxDriverExtensions
             var res = await firefoxDriver.LivePreferences().GetLocalized(prefPath);
             await firefoxDriver.LivePreferences().Set(prefPath, "'en-us,en'");
             
-            var addons = await ffDriver.AddonManager().GetAddonsList();
-            var res = await ffDriver.AddonManager().InstallAddon(addonPath);
-            var res = await ffDriver.AddonManager().InstallTemporaryAddon(addonPath2);
-            await ffDriver.AddonManager().UninstallAddon(addonId);
+            var addons = await firefoxDriver.AddonManager().GetAddonsList();
+            var res = await firefoxDriver.AddonManager().InstallAddon(addonPath);
+            var res = await firefoxDriver.AddonManager().InstallTemporaryAddon(addonPath2);
+            await firefoxDriver.AddonManager().UninstallAddon(addonId);
 ```
 
 ## Examples
