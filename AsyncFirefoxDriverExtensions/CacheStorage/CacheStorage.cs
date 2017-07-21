@@ -25,46 +25,66 @@ namespace Zu.Firefox
 
         public async Task<CacheInfo> GetCacheInfo(CancellationToken cancellationToken = new CancellationToken())
         {
-            await browserClient.AddSendEventFuncIfNo();
             await browserClient.SetContextChrome();
+            await browserClient.AddSendEventFuncIfNo();
             browserClient.AddEventListener("EvalAndWaitForEventCacheStorage", OnEvalAndWaitForEvent);
-            var evalStrAddId = @"
-var cacheStorageInfo = {};
-cacheStorageInfo.EntryCount = null;
-cacheStorageInfo.Consumption = null;
-cacheStorageInfo.Capacity = null;
-cacheStorageInfo.DiskDirectory = null;
-cacheStorageInfo.entries = [];
-Services.cache2.diskCacheStorage(Services.loadContextInfo.default, false).asyncVisitStorage({
-    onCacheStorageInfo: function (aEntryCount, aConsumption, aCapacity, aDiskDirectory) {
-        cacheStorageInfo.EntryCount = aEntryCount;
-        cacheStorageInfo.Consumption = aConsumption;
-        cacheStorageInfo.Capacity = aCapacity;
-        cacheStorageInfo.DiskDirectory = aDiskDirectory.path;
-    },
-    onCacheEntryInfo: function (aURI, aIdEnhance, aDataSize, aFetchCount, aLastModifiedTime, aExpirationTime, aPinned, aInfo) {
-        cacheStorageInfo.entries.push({
-            //'uri': aURI,
-            'Url': aURI.spec,
-            'IdEnhance': aIdEnhance,
-            'DataSize': aDataSize,
-            'FetchCount': aFetchCount,
-            'LastModifiedTime': (new Date(aLastModifiedTime * 1000)).toLocaleString(), 
-            'ExpirationTime': (new Date(aExpirationTime * 1000)).toLocaleString(),
-            'Pinned': aPinned,
-            //'Info': aInfo,
-        })
-    },
-    onCacheEntryVisitCompleted: function () {
-        top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'cacheStorageInfo': JSON.stringify(cacheStorageInfo) });
-    }
-}, true);
 
-";
+            var evalStrAddId = @"
+        try {
+            var cacheStorageInfo = {};
+            cacheStorageInfo.EntryCount = null;
+            cacheStorageInfo.Consumption = null;
+            cacheStorageInfo.Capacity = null;
+            cacheStorageInfo.DiskDirectory = null;
+            cacheStorageInfo.entries = [];
+            Services.cache2.diskCacheStorage(Services.loadContextInfo.default, false).asyncVisitStorage({
+                onCacheStorageInfo: function (aEntryCount, aConsumption, aCapacity, aDiskDirectory) {
+                    try {
+                    cacheStorageInfo.EntryCount = aEntryCount;
+                    cacheStorageInfo.Consumption = aConsumption;
+                    cacheStorageInfo.Capacity = aCapacity;
+                    cacheStorageInfo.DiskDirectory = aDiskDirectory.path;
+                    } catch (ex) {}
+                },
+                onCacheEntryInfo: function (aURI, aIdEnhance, aDataSize, aFetchCount, aLastModifiedTime, aExpirationTime, aPinned, aInfo) {
+                    try {
+                    cacheStorageInfo.entries.push({
+                        //'uri': aURI,
+                        'Url': aURI.spec,
+                        'IdEnhance': aIdEnhance,
+                        'DataSize': aDataSize,
+                        'FetchCount': aFetchCount,
+                        'LastModifiedTime': (new Date(aLastModifiedTime * 1000)).toLocaleString(), 
+                        'ExpirationTime': (new Date(aExpirationTime * 1000)).toLocaleString(),
+                        'Pinned': aPinned,
+                        //'Info': aInfo,
+                    });
+                    } catch (ex) {}
+                },
+                onCacheEntryVisitCompleted: function () {
+            try{
+                    top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'cacheStorageInfo': JSON.stringify(cacheStorageInfo) });
+                    } catch (ex) {
+                    top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'error': ex.toString() });
+            }
+                }
+            }, true);
+
+        } catch (ex) {
+            top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'error': ex.toString() });
+        }
+
+            ";
+
             var resJson = await EvalAndWaitForEvent(browserClient, evalStrAddId, cancellationToken);
             browserClient.RemoveEventListener(OnEvalAndWaitForEvent);
             try
             {
+                var err = resJson["error"]?["value"]?.ToString();
+                if(err != null)
+                {
+                    return new CacheInfo { Error = err };
+                }
                 return JsonConvert.DeserializeObject<CacheInfo>(resJson["cacheStorageInfo"]?["value"].ToString());
             }
             catch (Exception ex)
@@ -80,22 +100,42 @@ Services.cache2.diskCacheStorage(Services.loadContextInfo.default, false).asyncV
 
         public async Task<string> GetEntryHeaders(string url, CancellationToken cancellationToken = new CancellationToken())
         {
-            await browserClient.AddSendEventFuncIfNo();
             await browserClient.SetContextChrome();
+            await browserClient.AddSendEventFuncIfNo();
             browserClient.AddEventListener("EvalAndWaitForEventCacheStorage", OnEvalAndWaitForEvent);
             var evalStrAddId = @"
-var uri = Services.io.newURI('" + url + @"', null, null);
-Services.cache2.diskCacheStorage(Services.loadContextInfo.default, false).asyncOpenURI(uri, '', Ci.nsICacheStorage.OPEN_READONLY, {
-        onCacheEntryCheck: function (aEntry, aAppCache) {
-            return Ci.nsICacheEntryOpenCallback.ENTRY_WANTED;
-        },
-        onCacheEntryAvailable: function (aEntry, aNew, aAppCache, aResult) {
-            top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'headers': aEntry.getMetaDataElement('response-head') });
+        try {
+            var uri = Services.io.newURI('" + url + @"', null, null);
+            Services.cache2.diskCacheStorage(Services.loadContextInfo.default, false).asyncOpenURI(uri, '', Ci.nsICacheStorage.OPEN_READONLY, {
+                onCacheEntryCheck: function (aEntry, aAppCache) {
+                    return Ci.nsICacheEntryOpenCallback.ENTRY_WANTED;
+                },
+                onCacheEntryAvailable: function (aEntry, aNew, aAppCache, aResult) {
+                    if(aEntry) {
+                        try {
+                            top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'headers': aEntry.getMetaDataElement('response-head') });
+                        } catch (ex) {
+                            top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'error': ex.toString() });
+                        }
+                    } else {
+                        top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'headers': '' });
+                    }
+                }
+            });
+
+        } catch (ex) {
+            top.zuSendEvent({ 'to': 'EvalAndWaitForEventCacheStorage', 'id': _AddIdForEventHere_, 'error': ex.toString() });
         }
-    });
+
 ";
             var resJson = await EvalAndWaitForEvent(browserClient, evalStrAddId, cancellationToken);
             browserClient.RemoveEventListener(OnEvalAndWaitForEvent);
+            var err = resJson["error"]?["value"]?.ToString();
+            if (err != null)
+            {
+                return err;
+            }
+
             return resJson["headers"]?["value"]?.ToString();
         }
 
@@ -106,8 +146,8 @@ Services.cache2.diskCacheStorage(Services.loadContextInfo.default, false).asyncO
 
         public async Task<SaveEntryResult> SaveEntryDataToFile(string url, string filePath, CancellationToken cancellationToken = new CancellationToken())
         {
-            await browserClient.AddSendEventFuncIfNo();
             await browserClient.SetContextChrome();
+            await browserClient.AddSendEventFuncIfNo();
             browserClient.AddEventListener("EvalAndWaitForEventCacheStorage", OnEvalAndWaitForEvent);
 
             var scr = @"
@@ -165,7 +205,7 @@ _saveCacheEntry = function(aUrl, aFilePath) {
     });
 } 
 ";
-            await browserClient.ExecuteScript(scr, "saveCacheEntry.js");
+            await browserClient.ExecuteScript(scr/*, "saveCacheEntry.js"*/);
             var evalStrAddId = @" 
     _saveCacheEntry('" + url + @"', '" + filePath.Replace("\\", "\\\\") + @"')
         .then(res => {
@@ -193,8 +233,8 @@ _saveCacheEntry = function(aUrl, aFilePath) {
         // todo encoding problem
         public async Task<SaveEntryResult> GetEntryData(string url, bool doTryConvertToUnicode = false, CancellationToken cancellationToken = new CancellationToken())
         {
-            await browserClient.AddSendEventFuncIfNo();
             await browserClient.SetContextChrome();
+            await browserClient.AddSendEventFuncIfNo();
             browserClient.AddEventListener("EvalAndWaitForEventCacheStorage", OnEvalAndWaitForEvent);
 
             var scr = @"

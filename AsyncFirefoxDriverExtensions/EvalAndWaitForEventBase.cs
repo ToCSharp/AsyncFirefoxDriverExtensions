@@ -15,7 +15,7 @@ namespace Zu.Firefox
         {
             this.browserClient = browserClient;
         }
-        private int idEvalAndWaitForEvent = 1;
+        private int idEvalAndWaitForEvent = 0;
         private ConcurrentDictionary<int, TaskCompletionSource<JToken>> evalAndWaitForEventAsyncTasks = new ConcurrentDictionary<int, TaskCompletionSource<JToken>>();
 
         public async Task<JToken> EvalAndWaitForEvent(IAsyncWebBrowserClient browserClient, string evalStrAddId, /*int id, */CancellationToken cancellationToken = new CancellationToken())
