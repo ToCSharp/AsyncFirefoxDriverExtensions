@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Zu.Firefox;
 
 namespace FirefoxDriverExtensionsExample
@@ -143,6 +143,72 @@ namespace FirefoxDriverExtensionsExample
             if (ffDriver == null) return;
             var res = await ffDriver.AddonManager().InstallTemporaryAddon(tbAddonPath.Text);
             tbAddonData.Text = res.AddonId ?? res.Error;
+        }
+
+        private async void Button_Click_13(object sender, RoutedEventArgs e)
+        {
+            if (ffDriver == null) return;
+            var res = await ffDriver.Fetch(tbFetchUrl.Text);
+            tbFetchRes.Text = res.Result ?? res.Error;
+        }
+
+        private async void Button_Click_14(object sender, RoutedEventArgs e)
+        {
+            if (ffDriver == null) return;
+            var res = await ffDriver.CacheStorage().GetCacheInfo();
+            tbCacheDir.Text = res.DiskDirectory;
+            lbCacheInfo.ItemsSource = null;
+            lbCacheInfo.ItemsSource = res.entries;
+        }
+
+        private void lbCacheInfo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var entry = lbCacheInfo.SelectedItem as CacheEntry;
+            if (entry == null) return;
+            tbCacheEntryInfo.Text = entry?.GetInfo();
+
+            tbCacheInfoFileName.Text = GetFileNameFromUrl(entry.Url);
+        }
+        static string GetFileNameFromUrl(string url)
+        {
+            Uri uri;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
+                uri = new Uri(url);
+
+            return Path.GetFileName(uri.LocalPath);
+        }
+
+        private async void Button_Click_15(object sender, RoutedEventArgs e)
+        {
+            var entry = lbCacheInfo.SelectedItem as CacheEntry;
+            if (ffDriver == null || entry == null) return;
+            var res = await ffDriver.CacheStorage().GetEntryHeaders(entry);
+            tbCacheEntryInfo.Text += Environment.NewLine + res;
+        }
+
+        private async void Button_Click_16(object sender, RoutedEventArgs e)
+        {
+            var entry = lbCacheInfo.SelectedItem as CacheEntry;
+            if (ffDriver == null || entry == null) return;
+            var path = Path.Combine(tbCacheInfoSaveDir.Text, tbCacheInfoFileName.Text);
+            var res = await ffDriver.CacheStorage().SaveEntryDataToFile(entry, path);
+            tbCacheEntryInfo.Text += Environment.NewLine + (res.Result ?? res.Error);
+
+        }
+
+        private async void Button_Click_17(object sender, RoutedEventArgs e)
+        {
+            if (ffDriver == null) return;
+            await ffDriver.CacheStorage().Clear();
+            tbCacheEntryInfo.Text = "Cleared";
+        }
+
+        private async void Button_Click_18(object sender, RoutedEventArgs e)
+        {
+            var entry = lbCacheInfo.SelectedItem as CacheEntry;
+            if (ffDriver == null || entry == null) return;
+            var res = await ffDriver.CacheStorage().GetEntryData(entry, true);
+            tbCacheEntryInfo.Text += Environment.NewLine + (res.Result ?? res.Error);
         }
     }
 }

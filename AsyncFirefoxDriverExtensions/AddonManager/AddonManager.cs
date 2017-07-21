@@ -11,14 +11,12 @@ using Zu.WebBrowser;
 
 namespace Zu.Firefox
 {
-    public class AddonManager
+    public class AddonManager: EvalAndWaitForEventBase
     {
-        private IAsyncWebBrowserClient browserClient;
-
-        public AddonManager(IAsyncWebBrowserClient browserClient)
+        public AddonManager(IAsyncWebBrowserClient browserClient) : base(browserClient)
         {
-            this.browserClient = browserClient;
         }
+
 
         public async Task<List<AddonData>> GetAddonsList(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -141,7 +139,7 @@ AddonManager.getAllAddons().then(a => {
             var res = new InstallAddonResult
             {
                 AddonId = resJson?["addonId"]?["value"]?.ToString(),
-                Error = resJson?["error"]?["value"]?.ToString(),
+                Error = (resJson?["error"] as JValue)?.ToString() ?? resJson?["error"]?["value"]?.ToString(),
             };
             return res;
         }
@@ -180,7 +178,7 @@ AddonManager.getAllAddons().then(a => {
             var res = new InstallAddonResult
             {
                 AddonId = resJson?["addonId"]?["value"]?.ToString(),
-                Error = resJson?["error"]?["value"]?.ToString(),
+                Error = (resJson?["error"] as JValue)?.ToString() ?? resJson?["error"]?["value"]?.ToString(),
             };
             return res;
         }
@@ -198,67 +196,6 @@ AddonManager.getAllAddons().then(a => {
 ";
             var resJson = await EvalAndWaitForEvent(browserClient, evalStrAddId, cancellationToken);
             browserClient.RemoveEventListener(OnEvalAndWaitForEvent);
-        }
-
-        private static int idEvalAndWaitForEvent = 1;
-        //private static string EvalAndWaitForEventName { get; } = "EvalAndWaitForEventLiveIp";
-        private static ConcurrentDictionary<int, TaskCompletionSource<JToken>> evalAndWaitForEventAsyncTasks = new ConcurrentDictionary<int, TaskCompletionSource<JToken>>();
-        private static async Task<JToken> EvalAndWaitForEvent(IAsyncWebBrowserClient browserClient, string evalStrAddId, /*int id, */CancellationToken cancellationToken = new CancellationToken())
-        {
-            var id = idEvalAndWaitForEvent++;
-            try
-            {
-                var evalStr = evalStrAddId.Replace("_AddIdForEventHere_", id.ToString()); //  string.Format(evalStrAddId, id);
-                var promise = evalAndWaitForEventAsyncTasks.GetOrAdd(id, i => new TaskCompletionSource<JToken>());
-
-                var res = await browserClient?.Eval(evalStr.Replace("\\", "\\\\"));
-                if (res?["error"] != null)
-                {
-                    return res;
-                }
-                else
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    cancellationToken.Register(() => promise.TrySetCanceled(), false);
-
-                    var response = await promise.Task.ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    return response;
-                }
-
-            }
-            finally
-            {
-                evalAndWaitForEventAsyncTasks.TryRemove(id, out TaskCompletionSource<JToken> promise);
-            }
-
-        }
-        private static void OnEvalAndWaitForEvent(JToken message)
-        {
-            try
-            {
-                if (int.TryParse(message?["id"]?["value"]?.ToString(), out int messageId))
-                {
-                    if (evalAndWaitForEventAsyncTasks.TryGetValue(messageId, out TaskCompletionSource<JToken> promise))
-                    {
-                        promise.SetResult(message);
-
-                    }
-                    else
-                    {
-                        //Debug.Fail(string.Format(CultureInfo.CurrentCulture, "Invalid response identifier '{0}'", messageId));
-                    }
-                }
-                else
-                {
-
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
         }
 
     }

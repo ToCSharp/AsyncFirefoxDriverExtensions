@@ -50,6 +50,41 @@
                     <TextBox x:Name="tbAddonData" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Fetch">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="55*"/>
+                        <RowDefinition Height="236*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="48,32,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_13"/>
+                    <TextBox x:Name="tbFetchUrl" Height="23" Margin="3,4,10,0" TextWrapping="Wrap" Text="https://www.google.com" VerticalAlignment="Top"/>
+                    <TextBox x:Name="tbFetchRes" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="CacheInfo">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="235*"/>
+                        <ColumnDefinition Width="141*"/>
+                        <ColumnDefinition Width="135*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="76"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <ListBox x:Name="lbCacheInfo" Grid.Row="1" SelectionChanged="lbCacheInfo_SelectionChanged"/>
+                    <Button Content="get" HorizontalAlignment="Left" Margin="16,27,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_14" Height="20"/>
+                    <TextBox x:Name="tbCacheDir" Height="23" Margin="42,3,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="16,6,0,0" TextWrapping="Wrap" Text="dir" VerticalAlignment="Top" Height="16"/>
+                    <TextBox x:Name="tbCacheEntryInfo" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Grid.ColumnSpan="2"/>
+                    <Button Content="Headers" HorizontalAlignment="Left" Margin="96,27,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_15" Height="20"/>
+                    <Button Content="save" HorizontalAlignment="Right" Margin="0,51,10,0" VerticalAlignment="Top" Width="64" Click="Button_Click_16" Height="20"/>
+                    <TextBox x:Name="tbCacheInfoSaveDir" Grid.Column="1" Height="23" Margin="10,51,10,0" TextWrapping="Wrap" Text="C:\temp" VerticalAlignment="Top"/>
+                    <TextBox x:Name="tbCacheInfoFileName" Grid.Column="2" Height="23" Margin="0,51,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <Button Content="clear cache" HorizontalAlignment="Left" Margin="16,51,0,0" VerticalAlignment="Top" Width="75" Height="20" Click="Button_Click_17"/>
+                    <Button Content="Data" HorizontalAlignment="Left" Margin="176,27,0,0" VerticalAlignment="Top" Width="49" Click="Button_Click_18"/>
+                </Grid>
+            </TabItem>
         </TabControl>
 
     </Grid>
