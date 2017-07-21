@@ -8,7 +8,7 @@ namespace Zu.Firefox
 {
     public class InstallAddonResult
     {
-        public string AddonId { get; internal set; }
-        public string Error { get; internal set; }
+        public string AddonId { get; set; }
+        public string Error { get; set; }
     }
 }

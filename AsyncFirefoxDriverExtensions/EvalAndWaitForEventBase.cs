@@ -9,7 +9,7 @@ namespace Zu.Firefox
 {
     public class EvalAndWaitForEventBase
     {
-        internal IAsyncWebBrowserClient browserClient;
+        public IAsyncWebBrowserClient browserClient;
 
         public EvalAndWaitForEventBase(IAsyncWebBrowserClient browserClient)
         {
@@ -18,7 +18,7 @@ namespace Zu.Firefox
         private int idEvalAndWaitForEvent = 1;
         private ConcurrentDictionary<int, TaskCompletionSource<JToken>> evalAndWaitForEventAsyncTasks = new ConcurrentDictionary<int, TaskCompletionSource<JToken>>();
 
-        internal async Task<JToken> EvalAndWaitForEvent(IAsyncWebBrowserClient browserClient, string evalStrAddId, /*int id, */CancellationToken cancellationToken = new CancellationToken())
+        public async Task<JToken> EvalAndWaitForEvent(IAsyncWebBrowserClient browserClient, string evalStrAddId, /*int id, */CancellationToken cancellationToken = new CancellationToken())
         {
             var id = Interlocked.Increment(ref idEvalAndWaitForEvent);
             try
@@ -49,7 +49,7 @@ namespace Zu.Firefox
             }
 
         }
-        internal void OnEvalAndWaitForEvent(JToken message)
+        public void OnEvalAndWaitForEvent(JToken message)
         {
             try
             {

@@ -78,7 +78,7 @@ Services.cache2.diskCacheStorage(Services.loadContextInfo.default, false).asyncV
             return GetEntryHeaders(entry.Url, cancellationToken);
         }
 
-        private async Task<string> GetEntryHeaders(string url, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<string> GetEntryHeaders(string url, CancellationToken cancellationToken = new CancellationToken())
         {
             await browserClient.AddSendEventFuncIfNo();
             await browserClient.SetContextChrome();
@@ -104,7 +104,7 @@ Services.cache2.diskCacheStorage(Services.loadContextInfo.default, false).asyncO
             return SaveEntryDataToFile(entry.Url, filePath, cancellationToken);
         }
 
-        private async Task<SaveEntryResult> SaveEntryDataToFile(string url, string filePath, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<SaveEntryResult> SaveEntryDataToFile(string url, string filePath, CancellationToken cancellationToken = new CancellationToken())
         {
             await browserClient.AddSendEventFuncIfNo();
             await browserClient.SetContextChrome();
@@ -119,51 +119,53 @@ _saveCacheEntry = function(aUrl, aFilePath) {
                 return Ci.nsICacheEntryOpenCallback.ENTRY_WANTED;
             },
             onCacheEntryAvailable: function (aEntry, aNew, aAppCache, aResult) {
-                var encode = null;
-                if (aEntry.getMetaDataElement('response-head').match(/Content-Encoding: (.+)$/m)) {
-                    encode = RegExp.$1;
-                }
-                var BinaryInputStream = Components.Constructor('@mozilla.org/binaryinputstream;1', 'nsIBinaryInputStream', 'setInputStream');
-                var converterService = Cc['@mozilla.org/streamConverters;1'].getService(Ci.nsIStreamConverterService);
-                var readData = function (aEntry2, aEncode) {
-                    return new Promise((resolve, reject) => {
-                        let data = [];
-                        let listener = {
-                            onStartRequest: function (aRequest, aContext) { },
-                            onDataAvailable: function (aRequest, aContext, aInputStream, aOffset, aCount) {
-                                data.push(new BinaryInputStream(aInputStream).readBytes(aCount));
-                            },
-                            onStopRequest: function (aRequest, aContext, aStatusCode) {
-                                resolve(data.join(''));
-                            }
-                        };
-                        let inputStream = aEntry2.openInputStream(0);
-                        let pump = Cc['@mozilla.org/network/input-stream-pump;1'].createInstance(Ci.nsIInputStreamPump);
-                        pump.init(inputStream, 0, -1, 0, 0, true);
-                        if (aEncode) {
-                            listener = converterService.asyncConvertData(RegExp.$1, 'uncompressed', listener, null);
-                        }
-                        pump.asyncRead(listener, null);
-                    });
-                }
-                readData(aEntry, encode).then(data => {
-                    var fileStream = FileUtils.openFileOutputStream(new FileUtils.File(aFilePath),
-                        FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE | FileUtils.MODE_TRUNCATE);
-
-                    fileStream.write(data, data.length);
-                    if (fileStream instanceof Ci.nsISafeOutputStream) {
-                        fileStream.finish();
-                    } else {
-                        fileStream.close();
+                try {
+                    var encode = null;
+                    if (aEntry.getMetaDataElement('response-head').match(/Content-Encoding: (.+)$/m)) {
+                        encode = RegExp.$1;
                     }
-                    resolve('saved');
-                });
+                    var BinaryInputStream = Components.Constructor('@mozilla.org/binaryinputstream;1', 'nsIBinaryInputStream', 'setInputStream');
+                    var converterService = Cc['@mozilla.org/streamConverters;1'].getService(Ci.nsIStreamConverterService);
+                    var readData = function (aEntry2, aEncode) {
+                        return new Promise((resolve, reject) => {
+                            let data = [];
+                            let listener = {
+                                onStartRequest: function (aRequest, aContext) { },
+                                onDataAvailable: function (aRequest, aContext, aInputStream, aOffset, aCount) {
+                                    data.push(new BinaryInputStream(aInputStream).readBytes(aCount));
+                                },
+                                onStopRequest: function (aRequest, aContext, aStatusCode) {
+                                    resolve(data.join(''));
+                                }
+                            };
+                            let inputStream = aEntry2.openInputStream(0);
+                            let pump = Cc['@mozilla.org/network/input-stream-pump;1'].createInstance(Ci.nsIInputStreamPump);
+                            pump.init(inputStream, 0, -1, 0, 0, true);
+                            if (aEncode) {
+                                listener = converterService.asyncConvertData(RegExp.$1, 'uncompressed', listener, null);
+                            }
+                            pump.asyncRead(listener, null);
+                        });
+                    }
+                    readData(aEntry, encode).then(data => {
+                        var fileStream = FileUtils.openFileOutputStream(new FileUtils.File(aFilePath),
+                            FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE | FileUtils.MODE_TRUNCATE);
+
+                        fileStream.write(data, data.length);
+                        if (fileStream instanceof Ci.nsISafeOutputStream) {
+                            fileStream.finish();
+                        } else {
+                            fileStream.close();
+                        }
+                        resolve('saved');
+                    });
+                } catch (ex) { reject(ex.toString()); }
             }
         });
     });
 } 
 ";
-            await browserClient.ExecuteScript(scr/*, "saveCacheEntry.js"*/);
+            await browserClient.ExecuteScript(scr, "saveCacheEntry.js");
             var evalStrAddId = @" 
     _saveCacheEntry('" + url + @"', '" + filePath.Replace("\\", "\\\\") + @"')
         .then(res => {

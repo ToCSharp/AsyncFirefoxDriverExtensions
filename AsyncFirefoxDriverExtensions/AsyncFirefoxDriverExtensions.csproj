@@ -65,6 +65,7 @@
     <Compile Include="CacheStorage\CacheStorageExtension.cs" />
     <Compile Include="EvalAndWaitForEventBase.cs" />
     <Compile Include="CacheStorage\SaveEntryResult.cs" />
+    <Compile Include="Fetch\FetchClass.cs" />
     <Compile Include="Fetch\FetchExtension.cs" />
     <Compile Include="Fetch\FetchResult.cs" />
     <Compile Include="LiveIp\LiveIp.cs" />
