@@ -11,7 +11,7 @@ namespace Zu.Firefox
 {
     public static class LivePreferencesExtension
     {
-        public static LivePreferences LivePreferences(this IAsyncWebBrowserClient browserClient)
+        public static LivePreferences LivePreferences(this AsyncFirefoxDriver browserClient)
         {
             return new LivePreferences(browserClient);
         }

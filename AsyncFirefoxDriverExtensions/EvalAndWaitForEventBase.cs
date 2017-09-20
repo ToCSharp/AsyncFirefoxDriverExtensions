@@ -9,16 +9,16 @@ namespace Zu.Firefox
 {
     public class EvalAndWaitForEventBase
     {
-        public IAsyncWebBrowserClient browserClient;
+        public AsyncFirefoxDriver browserClient;
 
-        public EvalAndWaitForEventBase(IAsyncWebBrowserClient browserClient)
+        public EvalAndWaitForEventBase(AsyncFirefoxDriver browserClient)
         {
             this.browserClient = browserClient;
         }
         private int idEvalAndWaitForEvent = 0;
         private ConcurrentDictionary<int, TaskCompletionSource<JToken>> evalAndWaitForEventAsyncTasks = new ConcurrentDictionary<int, TaskCompletionSource<JToken>>();
 
-        public async Task<JToken> EvalAndWaitForEvent(IAsyncWebBrowserClient browserClient, string evalStrAddId, /*int id, */CancellationToken cancellationToken = new CancellationToken())
+        public async Task<JToken> EvalAndWaitForEvent(AsyncFirefoxDriver browserClient, string evalStrAddId, /*int id, */CancellationToken cancellationToken = new CancellationToken())
         {
             var id = Interlocked.Increment(ref idEvalAndWaitForEvent);
             try

@@ -11,12 +11,12 @@ namespace Zu.Firefox
 {
     public static class CacheStorageExtension
     {
-        public static CacheStorage CacheStorage(this IAsyncWebBrowserClient browserClient)
+        public static CacheStorage CacheStorage(this AsyncFirefoxDriver browserClient)
         {
             return new CacheStorage(browserClient);
         }
 
-        public static CacheStorage CacheStorage(this WebDriver webDriver) => webDriver?.browserClient?.CacheStorage();
+        public static CacheStorage CacheStorage(this WebDriver webDriver) => (webDriver?.browserClient as AsyncFirefoxDriver)?.CacheStorage();
 
     }
 }

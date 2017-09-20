@@ -30,10 +30,6 @@ namespace FirefoxDriverExtensionsExample
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             var profileName = tbProfileName.Text;
-            if (FirefoxProfilesWorker.GetMarionettePort(profileName) == 0)
-                FirefoxProfilesWorker.SetMarionettePort(profileName, 5432);
-            FirefoxProfilesWorker.OpenFirefoxProfile(profileName);
-
             ffDriver = new AsyncFirefoxDriver(profileName);
             await ffDriver.Connect();
             tblOpened.Text = "opened";
@@ -209,6 +205,11 @@ namespace FirefoxDriverExtensionsExample
             if (ffDriver == null || entry == null) return;
             var res = await ffDriver.CacheStorage().GetEntryData(entry, true);
             tbCacheEntryInfo.Text += Environment.NewLine + (res.Result ?? res.Error);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ffDriver?.CloseSync();
         }
     }
 }

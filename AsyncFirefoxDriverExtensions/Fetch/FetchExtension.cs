@@ -11,9 +11,9 @@ namespace Zu.Firefox
     public static class FetchExtension
     {
  
-        public static Task<FetchResult> Fetch(this WebDriver webDriver, string url) => webDriver?.browserClient?.Fetch(url);
+        public static Task<FetchResult> Fetch(this WebDriver webDriver, string url) => (webDriver?.browserClient as AsyncFirefoxDriver)?.Fetch(url);
 
-        public static Task<FetchResult> Fetch(this IAsyncWebBrowserClient browserClient, string url)
+        public static Task<FetchResult> Fetch(this AsyncFirefoxDriver browserClient, string url)
             => new FetchClass(browserClient).Fetch(url);
 
     }

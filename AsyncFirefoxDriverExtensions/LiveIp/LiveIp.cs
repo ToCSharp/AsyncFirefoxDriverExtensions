@@ -10,7 +10,7 @@ namespace Zu.Firefox
 {
     public class LiveIp: EvalAndWaitForEventBase
     {
-        public LiveIp(IAsyncWebBrowserClient browserClient) : base(browserClient)
+        public LiveIp(AsyncFirefoxDriver browserClient) : base(browserClient)
         {
         }
 

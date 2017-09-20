@@ -10,7 +10,7 @@ namespace Zu.Firefox
 {
     internal class FetchClass: EvalAndWaitForEventBase
     {
-        public FetchClass(IAsyncWebBrowserClient browserClient) : base(browserClient)
+        public FetchClass(AsyncFirefoxDriver browserClient) : base(browserClient)
         {
         }
 

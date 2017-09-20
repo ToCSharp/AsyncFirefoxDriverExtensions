@@ -13,7 +13,7 @@ namespace Zu.Firefox
 {
     public class AddonManager: EvalAndWaitForEventBase
     {
-        public AddonManager(IAsyncWebBrowserClient browserClient) : base(browserClient)
+        public AddonManager(AsyncFirefoxDriver browserClient) : base(browserClient)
         {
         }
 

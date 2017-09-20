@@ -7,9 +7,9 @@ namespace Zu.Firefox
 {
     public class LivePreferences
     {
-        private IAsyncWebBrowserClient browserClient;
+        private AsyncFirefoxDriver browserClient;
 
-        public LivePreferences(IAsyncWebBrowserClient browserClient)
+        public LivePreferences(AsyncFirefoxDriver browserClient)
         {
             this.browserClient = browserClient;
         }

@@ -13,7 +13,7 @@ namespace Zu.Firefox
 {
     public class CacheStorage : EvalAndWaitForEventBase
     {
-        public CacheStorage(IAsyncWebBrowserClient browserClient) : base(browserClient)
+        public CacheStorage(AsyncFirefoxDriver browserClient) : base(browserClient)
         {
         }
 
@@ -205,7 +205,7 @@ _saveCacheEntry = function(aUrl, aFilePath) {
     });
 } 
 ";
-            await browserClient.ExecuteScript(scr/*, "saveCacheEntry.js"*/);
+            await browserClient.JavaScriptExecutor.ExecuteScript(scr/*, "saveCacheEntry.js"*/);
             var evalStrAddId = @" 
     _saveCacheEntry('" + url + @"', '" + filePath.Replace("\\", "\\\\") + @"')
         .then(res => {
@@ -281,7 +281,7 @@ _getCacheEntryData = function(aUrl) {
     });
 } 
 ";
-            await browserClient.ExecuteScript(scr);
+            await browserClient.JavaScriptExecutor.ExecuteScript(scr);
             var evalStrAddId = "";
             if (doTryConvertToUnicode)
             {

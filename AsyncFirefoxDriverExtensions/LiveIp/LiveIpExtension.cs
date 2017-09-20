@@ -10,9 +10,9 @@ namespace Zu.Firefox
 {
     public static class LiveIpExtension
     {
-        public static Task<LiveIpResult> GetLiveIp(this WebDriver webDriver) => webDriver?.browserClient?.GetLiveIp();
+        public static Task<LiveIpResult> GetLiveIp(this WebDriver webDriver) => (webDriver?.browserClient as AsyncFirefoxDriver)?.GetLiveIp();
 
-        public static Task<LiveIpResult> GetLiveIp(this IAsyncWebBrowserClient browserClient)
+        public static Task<LiveIpResult> GetLiveIp(this AsyncFirefoxDriver browserClient)
             => new LiveIp(browserClient).GetLiveIp();
 
     }

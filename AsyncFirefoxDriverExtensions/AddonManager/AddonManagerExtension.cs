@@ -11,12 +11,12 @@ namespace Zu.Firefox
 {
     public static class AddonManagerExtension
     {
-        public static AddonManager AddonManager(this IAsyncWebBrowserClient browserClient)
+        public static AddonManager AddonManager(this AsyncFirefoxDriver browserClient)
         {
             return new AddonManager(browserClient);
         }
 
-        public static AddonManager AddonManager(this WebDriver webDriver) => webDriver?.browserClient?.AddonManager();
+        public static AddonManager AddonManager(this WebDriver webDriver) => (webDriver?.browserClient as AsyncFirefoxDriver)?.AddonManager();
 
     }
 }
