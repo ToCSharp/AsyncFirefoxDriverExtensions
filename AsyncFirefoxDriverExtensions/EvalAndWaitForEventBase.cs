@@ -27,12 +27,12 @@ namespace Zu.Firefox
                 var promise = evalAndWaitForEventAsyncTasks.GetOrAdd(id, i => new TaskCompletionSource<JToken>());
 
                 var res = await browserClient?.Eval(evalStr.Replace("\\", "\\\\"));
-                if (res?["error"] != null)
-                {
-                    return res;
-                }
-                else
-                {
+                //if (res?["error"] != null)
+                //{
+                //    return res;
+                //}
+                //else
+                //{
                     cancellationToken.ThrowIfCancellationRequested();
                     cancellationToken.Register(() => promise.TrySetCanceled(), false);
 
@@ -40,7 +40,7 @@ namespace Zu.Firefox
                     cancellationToken.ThrowIfCancellationRequested();
 
                     return response;
-                }
+                //}
 
             }
             finally

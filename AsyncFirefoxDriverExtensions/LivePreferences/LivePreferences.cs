@@ -14,7 +14,7 @@ namespace Zu.Firefox
             this.browserClient = browserClient;
         }
 
-        public async Task<JToken> Set(string path, string value)
+        public async Task<string> Set(string path, string value)
         {
             if (browserClient == null) throw new ArgumentException(nameof(browserClient));
             if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException(nameof(path));
@@ -27,9 +27,9 @@ return ex.toString();
 }}
 return ""ok"";
 ");
-            return res;
+            return res?.ToString();
         }
-        public async Task<JToken> SetLocalized(string path, string value)
+        public async Task<object> SetLocalized(string path, string value)
         {
             if (browserClient == null) throw new ArgumentException(nameof(browserClient));
             if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException(nameof(path));
@@ -56,7 +56,7 @@ return preferences.get('{path}');
 return ex.toString();
 }}
 ");
-            return res?["value"].ToString();
+            return res/*?["value"]*/.ToString();
         }
         public async Task<string> GetLocalized(string path)
         {
@@ -70,7 +70,7 @@ return preferences.getLocalized('{path}');
 return ex.toString();
 }}
 ");
-            return res?["value"].ToString();
+            return res/*?["value"]*/.ToString();
         }
         public async Task<string> Reset(string path)
         {
@@ -85,7 +85,7 @@ return ex.toString();
 }}
 return 'ok';
 ");
-            return res?["value"].ToString();
+            return res/*?["value"]*/.ToString();
         }
 
         public async Task<string> IsSet(string path)
@@ -100,7 +100,7 @@ return preferences.isSet('{path}');
 return ex.toString();
 }}
 ");
-            return res?["value"].ToString();
+            return res/*?["value"]*/.ToString();
         }
         public async Task<string> Has(string path)
         {
@@ -114,7 +114,7 @@ return preferences.has('{path}');
 return ex.toString();
 }}
 ");
-            return res?["value"].ToString();
+            return res/*?["value"]*/.ToString();
         }
 
     }
